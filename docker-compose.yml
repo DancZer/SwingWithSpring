@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: employees-postgres
+    environment:
+      POSTGRES_DB: employees
+      POSTGRES_USER: employees
+      POSTGRES_PASSWORD: employees
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - employees-network
+
+  backend:
+    build:
+      context: ./employees-backend
+    container_name: employees-backend
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/employees
+      SPRING_DATASOURCE_USERNAME: employees
+      SPRING_DATASOURCE_PASSWORD: employees
+    networks:
+      - employees-network
+
+  frontend:
+    build:
+      context: ./employees-frontend
+      args:
+        VITE_API_URL: http://localhost:8081/api
+    container_name: employees-frontend
+    ports:
+      - "8082:80"
+    depends_on:
+      - backend
+    networks:
+      - employees-network
+
+volumes:
+  pgdata:
+
+networks:
+  employees-network:
+    driver: bridge

@@ -7,9 +7,10 @@ export default function EmployeeList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://host.docker.internal:8080/api/employees")
+    fetch(`${import.meta.env.VITE_API_URL}/employees`)
       .then((res) => res.json())
       .then((data) => {
+		console.log("Fetched employees:", data);
         setEmployees(data);
         setLoading(false);
       })
