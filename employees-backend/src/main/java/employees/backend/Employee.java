@@ -17,7 +17,8 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_seq")
+    @SequenceGenerator(name = "employee_seq", sequenceName = "employee_sequence", allocationSize = 1)
     @Column(name = "id", nullable = false)
     // Surrogate key
     private Long id;
